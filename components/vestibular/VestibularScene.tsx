@@ -7,6 +7,7 @@ import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
 import { RefreshCcw } from "lucide-react";
 import InnerEarModel from "./InnerEarModel";
+import ProceduralHead from "./ProceduralHead";
 import { useVestibular } from "@/lib/store";
 import type { Ear } from "@/lib/types";
 
@@ -118,6 +119,9 @@ export default function VestibularScene() {
               THREE.MathUtils.degToRad(head.roll),
             ]}
           >
+            {activeTab === "head-movement" && (
+              <ProceduralHead scale={1.2} />
+            )}
             <group ref={modelGroupRef}>
               <InnerEarModel
                 ear="right"
