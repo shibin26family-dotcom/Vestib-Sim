@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Pause, Play, RefreshCw } from "lucide-react";
+import { Pause, Play, RefreshCw, Zap } from "lucide-react";
 import Slider from "@/components/ui/Slider";
 import FiringRateGauge from "@/components/ui/FiringRateGauge";
 import { useVestibular } from "@/lib/store";
@@ -50,6 +50,35 @@ export default function HeadMovementSimulator() {
       setShowBothEars(true);
     }
   }, [activeTab, setShowBothEars]);
+
+  useEffect(() => {
+    if (activeTab !== "head-movement") return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const step = 15;
+      switch (e.key) {
+        case "ArrowLeft":
+          e.preventDefault();
+          setAxisValue("yaw", Math.max(-90, currentYaw - step));
+          break;
+        case "ArrowRight":
+          e.preventDefault();
+          setAxisValue("yaw", Math.min(90, currentYaw + step));
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          setAxisValue("pitch", Math.max(-90, currentPitch - step));
+          break;
+        case "ArrowDown":
+          e.preventDefault();
+          setAxisValue("pitch", Math.min(90, currentPitch + step));
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeTab, currentYaw, currentPitch, currentRoll]);
 
   const currentYaw = Math.round(head.yaw);
   const currentPitch = Math.round(head.pitch);
@@ -168,6 +197,58 @@ export default function HeadMovementSimulator() {
           <RefreshCw size={14} />
           Reset
         </button>
+      </div>
+
+      {/* Preset Movements */}
+      <div>
+        <h3 className="mb-2 text-xs font-semibold tracking-wide text-slate-300 uppercase">
+          Quick Presets
+        </h3>
+        <div className="grid grid-cols-2 gap-1.5">
+          <button
+            onClick={() => {
+              setHead({ yaw: -60, pitch: 0, roll: 0 });
+              setHeadMovement({ playing: false });
+            }}
+            className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-2 py-1.5 text-[10px] font-semibold text-orange-300 transition-colors hover:bg-orange-500/20 focus-visible:ring-1 focus-visible:ring-orange-400 focus-visible:outline-none"
+            title="Rotate head left (Yaw -60°)"
+          >
+            👈 Look Left
+          </button>
+          <button
+            onClick={() => {
+              setHead({ yaw: 60, pitch: 0, roll: 0 });
+              setHeadMovement({ playing: false });
+            }}
+            className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-2 py-1.5 text-[10px] font-semibold text-orange-300 transition-colors hover:bg-orange-500/20 focus-visible:ring-1 focus-visible:ring-orange-400 focus-visible:outline-none"
+            title="Rotate head right (Yaw +60°)"
+          >
+            Look Right 👉
+          </button>
+          <button
+            onClick={() => {
+              setHead({ yaw: 0, pitch: -60, roll: 0 });
+              setHeadMovement({ playing: false });
+            }}
+            className="rounded-lg border border-purple-500/30 bg-purple-500/10 px-2 py-1.5 text-[10px] font-semibold text-purple-300 transition-colors hover:bg-purple-500/20 focus-visible:ring-1 focus-visible:ring-purple-400 focus-visible:outline-none"
+            title="Tilt head back (Pitch -60°)"
+          >
+            ⬆️ Look Up
+          </button>
+          <button
+            onClick={() => {
+              setHead({ yaw: 0, pitch: 60, roll: 0 });
+              setHeadMovement({ playing: false });
+            }}
+            className="rounded-lg border border-purple-500/30 bg-purple-500/10 px-2 py-1.5 text-[10px] font-semibold text-purple-300 transition-colors hover:bg-purple-500/20 focus-visible:ring-1 focus-visible:ring-purple-400 focus-visible:outline-none"
+            title="Tilt head forward (Pitch +60°)"
+          >
+            ⬇️ Look Down
+          </button>
+        </div>
+        <p className="mt-1.5 text-[10px] text-slate-500">
+          💡 Tip: Use arrow keys (← → ↑ ↓) for smooth head rotation
+        </p>
       </div>
 
       {/* Canal Activation Meters */}
