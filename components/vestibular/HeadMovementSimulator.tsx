@@ -51,6 +51,10 @@ export default function HeadMovementSimulator() {
     }
   }, [activeTab, setShowBothEars]);
 
+  const currentYaw = Math.round(head.yaw);
+  const currentPitch = Math.round(head.pitch);
+  const currentRoll = Math.round(head.roll);
+
   useEffect(() => {
     if (activeTab !== "head-movement") return;
 
@@ -79,10 +83,6 @@ export default function HeadMovementSimulator() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [activeTab, currentYaw, currentPitch, currentRoll]);
-
-  const currentYaw = Math.round(head.yaw);
-  const currentPitch = Math.round(head.pitch);
-  const currentRoll = Math.round(head.roll);
 
   const setAxisValue = (axis: MotionAxis, value: number) => {
     setHead({
